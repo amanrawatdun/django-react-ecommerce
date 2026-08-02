@@ -2,8 +2,8 @@ from rest_framework.viewsets import ModelViewSet
 
 from .models import Category
 from .serializers import CategorySerializer
-from .permissions import IsAdminOrReadOnly
-from .pagination import CategoryPagination
+from ..shared.permissions import IsAdminOrReadOnly
+from ..shared.pagination import DefaultPagination
 
 
 class CategoryViewSet(ModelViewSet):
@@ -20,4 +20,4 @@ class CategoryViewSet(ModelViewSet):
 
     ordering_fields=["name","created_at"]
 
-    pagination_class=CategoryPagination
+    pagination_class=DefaultPagination

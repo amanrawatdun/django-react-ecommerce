@@ -108,6 +108,44 @@ class ProductCreateUpdateSerializer(serializers.ModelSerializer):
             validated_data
         )
 
+class ProductSummarySerializer(serializers.ModelSerializer):
+
+    brand = serializers.CharField(
+        source="brand.name",
+        read_only=True
+    )
+
+    category = serializers.CharField(
+        source="category.name",
+        read_only=True
+    )
+
+    primary_image = serializers.SerializerMethodField()
+
+    class Meta:
+
+        model = Product
+
+        fields = (
+            "id",
+            "name",
+            "slug",
+            "brand",
+            "category",
+            "primary_image",
+        )
+
+    def get_primary_image(self, obj):
+
+        image = obj.images.filter(
+            is_primary=True
+        ).first()
+
+        if image:
+            return image.image.url
+
+        return None
+    
 # class ProductSerializer(serializers.ModelSerializer):
 
 #     category = CategorySerializer(

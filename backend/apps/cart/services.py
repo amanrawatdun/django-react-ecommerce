@@ -4,7 +4,8 @@ from django.shortcuts import get_object_or_404
 from apps.products.models import ProductVariant
 from .models import Cart, CartItem
 from apps.shared.exceptions import OutOfStockException
-
+from rest_framework.exceptions import ValidationError
+from apps.wishlist.models import WishlistItem
 
 class CartService:
 
@@ -70,7 +71,7 @@ class CartService:
 
         cart = get_object_or_404(
            Cart,
-           user=user,
+        user=user,
         )
 
         cart.items.all().delete()

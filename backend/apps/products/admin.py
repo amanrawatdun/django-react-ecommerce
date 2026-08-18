@@ -13,6 +13,7 @@ class ProductVarientAdmin(admin.ModelAdmin):
         "product",
         "color",
         "size",
+        "price",
         "stock",
     )
 

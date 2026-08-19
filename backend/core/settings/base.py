@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'apps.wishlist',
     'apps.addresses',
     'apps.order',
+    'apps.payment'
 ]
 
 MIDDLEWARE = [
@@ -157,3 +158,10 @@ SIMPLE_JWT = {
 MEDIA_URL="/media/"
 
 MEDIA_ROOT=BASE_DIR/"media"
+
+from decouple import config
+
+
+RAZORPAY_KEY_ID = config("RAZORPAY_KEY_ID")
+RAZORPAY_KEY_SECRET = config("RAZORPAY_KEY_SECRET")
+

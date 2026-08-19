@@ -5,6 +5,17 @@ from django.shortcuts import get_object_or_404
 from apps.addresses.models import Address
 from apps.cart.models import Cart
 from .models import Order , OrderItem
+from apps.payment.models import Payment
+
+import razorpay
+from django.conf import settings
+
+client=razorpay.Client(
+    auth=(
+        settings.RAZORPAY_KEY_ID,
+        settings.RAZORPAY_KEY_SECRET,
+    )
+)
 
 class OrderService:
     @staticmethod
@@ -89,3 +100,25 @@ class OrderService:
         order.save(update_fields=["status"]) 
 
         return order
+
+    def create_payment(order):
+
+        amount=int(order.total_amount*100)
+
+        razorpay_order=client.order.create({
+            "amount":amount,
+            "currency":"INR",
+            "payment_capture":1,
+        })
+
+        payment = Payment.objects.create( 
+            order=order, 
+            razorpay_order_id=razorpay_order["id"], 
+        )
+
+        return { 
+            "payment_id": payment.id, 
+            "razorpay_order_id": payment.razorpay_order_id, 
+            "amount": amount, 
+            "key": settings.RAZORPAY_KEY_ID, 
+        }

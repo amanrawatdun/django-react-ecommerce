@@ -1,0 +1,7 @@
+testapikey:= rzp_test_TR9tdEvkiFKlTi
+
+test key secret:= iCN7wALvdsNFpbKYMg9F060C
+
+we have to work in order management 
+delete product variant
+

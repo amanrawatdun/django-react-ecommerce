@@ -54,7 +54,8 @@ class OrderItem(models.Model):
 
     variant = models.ForeignKey(
         ProductVariant,
-        on_delete=models.PROTECT
+        on_delete=models.PROTECT,
+        related_name="order_items"
     )
 
     quantity = models.PositiveIntegerField()

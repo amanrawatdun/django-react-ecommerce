@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     'apps.wishlist',
     'apps.addresses',
     'apps.order',
-    'apps.payment'
+    'apps.payment',
+    "apps.dashboard"
 ]
 
 MIDDLEWARE = [
@@ -146,7 +147,7 @@ REST_FRAMEWORK = {
 from datetime import timedelta
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=7),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
 
     "ROTATE_REFRESH_TOKENS": False,

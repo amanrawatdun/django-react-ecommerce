@@ -6,6 +6,7 @@ from apps.addresses.models import Address
 from apps.cart.models import Cart
 from .models import Order , OrderItem
 from apps.payment.models import Payment
+from rest_framework.exceptions import ValidationError
 
 import razorpay
 from django.conf import settings
@@ -18,6 +19,28 @@ client=razorpay.Client(
 )
 
 class OrderService:
+
+    ALLOWED_TRANSITIONS = {
+
+        Order.Status.PENDING: {
+            Order.Status.PAID,
+            Order.Status.CANCELLED,
+        },
+
+        Order.Status.PAID: {
+            Order.Status.SHIPPED,
+            Order.Status.CANCELLED,
+        },
+
+        Order.Status.SHIPPED: {
+            Order.Status.DELIVERED,
+        },
+
+        Order.Status.DELIVERED: set(),
+
+        Order.Status.CANCELLED: set(),
+    }
+
     @staticmethod
     @transaction.atomic
     def checkout(user ,address_id):
@@ -122,3 +145,30 @@ class OrderService:
             "amount": amount, 
             "key": settings.RAZORPAY_KEY_ID, 
         }
+
+    def update_status(order, new_status):
+
+        allowed_statuses = (
+            OrderService.ALLOWED_TRANSITIONS.get(
+                order.status,
+                set()
+            )
+        )
+
+        if new_status not in allowed_statuses:
+
+            raise ValidationError({
+                "status": (
+                    f"Cannot change order status "
+                    f"from {order.status} "
+                    f"to {new_status}."
+                )
+            })
+
+        order.status = new_status
+
+        order.save(
+            update_fields=["status"]
+        )
+
+        return order
